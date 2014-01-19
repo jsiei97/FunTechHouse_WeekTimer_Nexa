@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
         for (int z = 0; z < weekTimerList.size(); ++z)
         {
             WeekTimer wt = weekTimerList.at(z);
-            qDebug() << "Rum" << wt.getName() << wt.getID();
+            //qDebug() << "Rum" << wt.getName() << wt.getID();
 
             int id = wt.getID();
             if(id != -1)
@@ -131,13 +131,13 @@ int main(int argc, char *argv[])
                 {
                     if(wt.isON(dow, hour, min))
                     {
-                        qDebug() << "Turn ON at:" << dow << hour << min;
+                        qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
                         tdTurnOn(id);
                         sleep(1);
                     }
                     else
                     {
-                        qDebug() << "Turn OFF at:" << dow << hour << min;
+                        qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
                         tdTurnOff(id);
                         sleep(1);
                     }
