@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 
     QString timeData;
 
+    qDebug() << "Rum3 add data:";
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
     timeData.append("7:12:00-7:22:00;");
     rum3.addNewTimers(timeData);
 
+    qDebug() << "Rum2 add data:";
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
@@ -65,6 +67,7 @@ int main(int argc, char *argv[])
     rum2.addNewTimers(timeData);
 
 
+    qDebug() << "Rum1 add data:";
     timeData.clear();
     timeData.append("0:17:00-0:10:00;");
     rum1.addNewTimers(timeData);
@@ -144,7 +147,7 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        sleep(10);
+        sleep(1*60);
     }
 
     return 0;
