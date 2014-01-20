@@ -52,24 +52,25 @@ int main(int argc, char *argv[])
     timeData.append("8:06:00-8:10:00;");
     timeData.append("8:15:30-8:22:00;");
     //Sat, Sun
-    timeData.append("9:08:00-9:12:00;");
-    timeData.append("6:12:00-6:23:00;");
-    timeData.append("7:12:00-7:22:00;");
+    timeData.append("9:08:00-9:11:00;");
+    timeData.append("6:15:30-6:22:30;");
+    timeData.append("7:15:30-7:22:00;");
     rum3.addNewTimers(timeData);
 
     qDebug() << "Rum2 add data:";
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:15:30-8:23:00;");
+    timeData.append("8:15:30-8:22:30;");
     //Sat, Sun
-    timeData.append("9:08:00-9:23:00;");
+    timeData.append("9:08:00-9:11:00;");
+    timeData.append("9:15:30-9:23:00;");
     rum2.addNewTimers(timeData);
 
 
     qDebug() << "Rum1 add data:";
     timeData.clear();
-    timeData.append("0:17:00-0:10:00;");
+    timeData.append("0:15:30-0:10:00;");
     rum1.addNewTimers(timeData);
 
     QList<WeekTimer> weekTimerList;
