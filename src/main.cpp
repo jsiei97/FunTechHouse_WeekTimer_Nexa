@@ -50,21 +50,22 @@ int main(int argc, char *argv[])
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:15:30-8:22:00;");
+    timeData.append("8:15:30-8:21:00;");
     //Sat, Sun
     timeData.append("9:08:00-9:11:00;");
     timeData.append("6:15:30-6:22:30;");
-    timeData.append("7:15:30-7:22:00;");
+    timeData.append("7:15:30-7:21:30;");
     rum3.addNewTimers(timeData);
 
     qDebug() << "Rum2 add data:";
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:15:30-8:22:30;");
+    timeData.append("8:15:30-8:22:00;");
     //Sat, Sun
     timeData.append("9:08:00-9:11:00;");
-    timeData.append("9:15:30-9:23:00;");
+    timeData.append("6:15:30-6:22:30;");
+    timeData.append("7:15:30-7:21:30;");
     rum2.addNewTimers(timeData);
 
 
