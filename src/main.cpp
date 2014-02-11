@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:15:30-8:21:00;");
+    timeData.append("8:16:00-8:21:00;");
     //Sat, Sun
     timeData.append("9:08:00-9:11:00;");
     timeData.append("6:15:30-6:22:30;");
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
     timeData.clear();
     //Mon..Fri
     timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:15:30-8:22:00;");
+    timeData.append("8:16:00-8:22:00;");
     //Sat, Sun
     timeData.append("9:08:00-9:11:00;");
     timeData.append("6:15:30-6:22:30;");
