@@ -27,6 +27,9 @@
 #include <QDate>
 #include <QTime>
 
+//For sleep
+#include <unistd.h>
+
 // For the Telldus Duo
 #include <telldus-core.h>
 
