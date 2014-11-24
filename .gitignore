@@ -1,0 +1,15 @@
+#The bin file for this project
+WeekTimer
+
+# Buildfiles
+*.o
+*.moc
+*.swp
+
+# Autogen
+Makefile
+
+# Misc
+tags
+cscope.files
+cscope.out
