@@ -55,6 +55,8 @@ bool WeekTimer::addNewTimers(QString data)
 
     bool res = true;
 
+    timers.clear();
+
     WeekTimerLine wtl;
     for (int i = 0; i < list.size(); ++i)
     {

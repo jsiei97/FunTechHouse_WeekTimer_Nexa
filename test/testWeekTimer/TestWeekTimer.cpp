@@ -406,6 +406,10 @@ void TestWeekTimer::test_WeekTimerIO()
 {
     QFETCH(QString,timerLine);
     WeekTimer wt("test");
+
+    wt.addNewTimers(timerLine);
+    QCOMPARE(wt.getTimerString(), timerLine);
+
     wt.addNewTimers(timerLine);
     QCOMPARE(wt.getTimerString(), timerLine);
 }
