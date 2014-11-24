@@ -35,6 +35,7 @@ class TestWeekTimer : public QObject
     public:
 
     private slots:
+        //Tests for WeekTimerLine
         void test_setLine();
         void test_setLine_data();
 
@@ -48,7 +49,11 @@ class TestWeekTimer : public QObject
         void test_timeSinceWeekStart();
         void test_timeSinceWeekStart_data();
 
+        //Tests for WeekTimer
         void test_WeekTimer();
+
+        void test_WeekTimerIO();
+        void test_WeekTimerIO_data();
 };
 
 void TestWeekTimer::test_setLine_data()
@@ -385,6 +390,25 @@ void TestWeekTimer::test_WeekTimer()
     QCOMPARE(wt.getID(), 2);
 }
 
+/**
+ * Check that datastring in is eq to datastring out.
+ */
+void TestWeekTimer::test_WeekTimerIO_data()
+{
+    QTest::addColumn<QString>("timerLine");
+    QTest::newRow("test 01") << "7:12:32-7:23:34";
+    QTest::newRow("test 02") << "7:12:32-7:23:34;1:01:00-1:02:00";
+    QTest::newRow("test 03") << "7:12:32-7:23:34;1:01:00-1:02:00;4:11:30-5:12:00";
+
+}
+
+void TestWeekTimer::test_WeekTimerIO()
+{
+    QFETCH(QString,timerLine);
+    WeekTimer wt("test");
+    wt.addNewTimers(timerLine);
+    QCOMPARE(wt.getTimerString(), timerLine);
+}
 
 QTEST_MAIN(TestWeekTimer)
 #include "TestWeekTimer.moc"

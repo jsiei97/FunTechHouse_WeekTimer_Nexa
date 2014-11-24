@@ -53,6 +53,7 @@ class WeekTimerLine
     public:
         WeekTimerLine();
         bool setLine(QString line); // 8:06:00-8:09:00
+        QString getLine();
 
         bool isON(int dow, int h, int m);
 };

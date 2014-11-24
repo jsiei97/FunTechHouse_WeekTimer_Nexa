@@ -88,6 +88,17 @@ bool WeekTimerLine::setLine(QString line)
     return res;
 }
 
+QString WeekTimerLine::getLine()
+{
+    return QString("%1:%2:%3-%4:%5:%6")
+        .arg(t1_dow)
+        .arg(t1_h,2,10,QChar('0'))
+        .arg(t1_m,2,10,QChar('0'))
+        .arg(t2_dow)
+        .arg(t2_h,2,10,QChar('0'))
+        .arg(t2_m,2,10,QChar('0'));
+}
+
 int WeekTimerLine::timeSinceWeekStart(int d, int h, int m)
 {
     int time = 0;

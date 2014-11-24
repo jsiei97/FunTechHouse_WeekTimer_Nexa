@@ -40,6 +40,8 @@ class WeekTimer
         WeekTimer(QString name);
 
         bool addNewTimers(QString data);
+        QString getTimerString();
+
         bool isON(int dow, int hour, int min);
 
         bool isName(QString name);

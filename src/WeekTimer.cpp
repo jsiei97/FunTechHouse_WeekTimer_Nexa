@@ -72,6 +72,21 @@ bool WeekTimer::addNewTimers(QString data)
     return res;
 }
 
+QString WeekTimer::getTimerString()
+{
+    QString str;
+    for( int i=0 ; i<timers.size() ; i++ )
+    {
+        if(i!=0)
+        {
+            str.append(";");
+        }
+        WeekTimerLine wtl = timers.at(i);
+        str.append(wtl.getLine());
+    }
+    return str;
+}
+
 bool WeekTimer::isON(int dow, int hour, int min)
 {
     bool turnON = false;
