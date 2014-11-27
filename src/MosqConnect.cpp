@@ -89,11 +89,32 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
     qDebug() << "New message:" << (QDateTime::currentDateTime()).toString("hh:mm:ss") << topic << mess;
 
     //From topic to name
+    QRegExp rxName("/FunTechHouse/WeekTimer/(.*)_ctrl");
+    if (rxName.indexIn(topic) != -1)
+    {
+        QString name = rxName.cap(1);
+        qDebug() << "Mess to Name:" << name;
 
-    //What kind of mess is it?
-    // - new timer line?
-    // - status question?
-    // - force on/off for Xh?
+        for(int i=0; i<list->size(); i++)
+        {
+            WeekTimer wt = list->at(i);
+            if(wt.getName().compare(name) == 0)
+            {
+                //Name becomes "return topic"
+                name.prepend("/FunTechHouse/WeekTimer/");
+
+                //What kind of mess is it?
+                // - new timer line?
+                // - status question?
+                // - force on/off for Xh?
+                if(!wt.addNewTimers(mess))
+                {
+                    pub(name, "Error: bad data");
+                }
+                pub(name, wt.getTimerString());
+            }
+        }
+    }
 }
 
 void MosqConnect::on_subscribe(int mid, int qos_count, const int *granted_qos)
@@ -101,3 +122,7 @@ void MosqConnect::on_subscribe(int mid, int qos_count, const int *granted_qos)
     printf("Subscription succeeded. mid=%d qos=%d granter_qos=%d\n", mid, qos_count, *granted_qos);
 }
 
+void MosqConnect::pub(QString topic, QString subject)
+{
+    publish(NULL, topic.toAscii(), subject.size(), subject.toAscii());
+}
