@@ -32,10 +32,12 @@
 
 // For the Telldus Duo
 #include <telldus-core.h>
+#include <mosquittopp.h>
 
 #include "WeekTimer.h"
 #include "WeekTimerLine.h"
 
+#include "MosqConnect.h"
 
 int main()
 {
@@ -48,7 +50,9 @@ int main()
     // The name given in TelldusCenter also becomes the
     // uniq part of the mqtt topic.
 
-    QList<WeekTimer> weekTimerList;
+    QList<WeekTimer> *weekTimerList;
+    weekTimerList = new QList<WeekTimer>;
+
     int intNumberOfDevices = tdGetNumberOfDevices();
     for (int i = 0; i < intNumberOfDevices; i++)
     {
@@ -61,7 +65,7 @@ int main()
         {
             WeekTimer wt(name);
             wt.setID(id);
-            weekTimerList.append(wt);
+            weekTimerList->append(wt);
         }
         /// @todo Check for bell later, and
 
@@ -69,14 +73,40 @@ int main()
         tdReleaseString(nameTmp);
     }
 
-    for (int z = 0; z < weekTimerList.size(); ++z)
+
+    for (int z = 0; z < weekTimerList->size(); ++z)
     {
-        WeekTimer wt = weekTimerList.at(z);
+        WeekTimer wt = weekTimerList->at(z);
         qDebug() << "WeekTimer name:" << wt.getName() << "id:" << wt.getID();
     }
 
+    class MosqConnect *mqtt;
+    int rc;
+
+    mosqpp::lib_init();
+
+    mqtt = new MosqConnect(
+            "FunTechHouse_WeekTimer_Nexa",
+            "mosqhub",
+            1883,
+            weekTimerList
+            );
+
+    while(1)
+    {
+        rc = mqtt->loop();
+        if(rc)
+        {
+            mqtt->reconnect();
+        }
+
+
+    }
+    mosqpp::lib_cleanup();
+
     return 0;
 
+#if 0
     //for( int k=0 ; k<3 ; k++ )
     while(true)
     {
@@ -118,6 +148,7 @@ int main()
         }
         sleep(1*60);
     }
+#endif
 
     return 0;
 }

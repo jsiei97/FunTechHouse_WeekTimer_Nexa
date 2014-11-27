@@ -3,7 +3,9 @@ TARGET =
 
 DEPENDPATH  += . src
 INCLUDEPATH += . src
+
 LIBS += -ltelldus-core
+LIBS += -lmosquittopp -lmosquitto
 
 target.path = /usr/local/bin/
 INSTALLS += target
@@ -16,3 +18,6 @@ HEADERS += WeekTimer.h
 
 SOURCES += WeekTimerLine.cpp
 HEADERS += WeekTimerLine.h
+
+SOURCES += MosqConnect.cpp
+HEADERS += MosqConnect.h
