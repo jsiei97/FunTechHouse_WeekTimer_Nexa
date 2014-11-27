@@ -37,52 +37,18 @@
 #include "WeekTimerLine.h"
 
 
-int main(int argc, char *argv[])
+int main()
 {
     qDebug() << "WeekTimer";
     tdInit();
 
-    WeekTimer rum1("Rum1");
-    WeekTimer rum2("Rum2");
-    WeekTimer rum3("Rum3");
-
-
-    QString timeData;
-
-    qDebug() << "Rum3 add data:";
-    timeData.clear();
-    //Mon..Fri
-    timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:16:00-8:21:00;");
-    //Sat, Sun
-    timeData.append("9:08:00-9:11:00;");
-    timeData.append("6:15:30-6:22:30;");
-    timeData.append("7:15:30-7:21:30;");
-    rum3.addNewTimers(timeData);
-
-    qDebug() << "Rum2 add data:";
-    timeData.clear();
-    //Mon..Fri
-    timeData.append("8:06:00-8:10:00;");
-    timeData.append("8:16:00-8:22:00;");
-    //Sat, Sun
-    timeData.append("9:08:00-9:11:00;");
-    timeData.append("6:15:30-6:22:30;");
-    timeData.append("7:15:30-7:21:30;");
-    rum2.addNewTimers(timeData);
-
-
-    qDebug() << "Rum1 add data:";
-    timeData.clear();
-    timeData.append("0:15:30-0:10:00;");
-    rum1.addNewTimers(timeData);
+    // This list comes from /etc/tellstick.conf
+    // that was created with TelldusCenter.
+    //
+    // The name given in TelldusCenter also becomes the
+    // uniq part of the mqtt topic.
 
     QList<WeekTimer> weekTimerList;
-    weekTimerList.append(rum1);
-    weekTimerList.append(rum2);
-    weekTimerList.append(rum3);
-
-
     int intNumberOfDevices = tdGetNumberOfDevices();
     for (int i = 0; i < intNumberOfDevices; i++)
     {
@@ -90,18 +56,15 @@ int main(int argc, char *argv[])
         char *nameTmp = tdGetName( id );
         QString name = QString(nameTmp);
 
-        for (int z = 0; z < weekTimerList.size(); ++z)
+        int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
+        if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
         {
-            WeekTimer wt = weekTimerList.at(z);
-            if(wt.isName(name))
-            {
-                //qDebug() << id << name;
-                wt.setID(id);
-                weekTimerList.replace(z, wt);
-            }
+            WeekTimer wt(name);
+            wt.setID(id);
+            weekTimerList.append(wt);
         }
+        /// @todo Check for bell later, and
 
-        //printf("%d\t%s\n", id, name);
         qDebug() << id << name;
         tdReleaseString(nameTmp);
     }
@@ -109,9 +72,10 @@ int main(int argc, char *argv[])
     for (int z = 0; z < weekTimerList.size(); ++z)
     {
         WeekTimer wt = weekTimerList.at(z);
-        qDebug() << "Rum" << wt.getName() << wt.getID();
+        qDebug() << "WeekTimer name:" << wt.getName() << "id:" << wt.getID();
     }
 
+    return 0;
 
     //for( int k=0 ; k<3 ; k++ )
     while(true)
