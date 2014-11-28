@@ -111,6 +111,10 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 {
                     pub(name, "Error: bad data");
                 }
+                else
+                {
+                    list->replace(i, wt);
+                }
                 pub(name, wt.getTimerString());
             }
         }

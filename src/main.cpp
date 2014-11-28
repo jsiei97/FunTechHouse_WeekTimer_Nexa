@@ -34,10 +34,11 @@
 #include <telldus-core.h>
 #include <mosquittopp.h>
 
+#include "MosqConnect.h"
+#include "UnixTime.h"
 #include "WeekTimer.h"
 #include "WeekTimerLine.h"
 
-#include "MosqConnect.h"
 
 int main()
 {
@@ -94,61 +95,59 @@ int main()
 
     while(1)
     {
+        //Check if there is new mess for me
         rc = mqtt->loop();
         if(rc)
         {
             mqtt->reconnect();
         }
 
-
-    }
-    mosqpp::lib_cleanup();
-
-    return 0;
-
-#if 0
-    //for( int k=0 ; k<3 ; k++ )
-    while(true)
-    {
-        QDate nowDate = QDate::currentDate();
-        int dow = nowDate.dayOfWeek();
-
-        QTime nowTime = QTime::currentTime();
-        int hour = nowTime.hour();
-        int min = nowTime.minute();
-
-        qDebug() << "Time:" << dow << hour << min;
-
-
-        for (int z = 0; z < weekTimerList.size(); ++z)
+        //Then every minute or so,
+        //update the timer output
+        if(UnixTime::get()%30==0)
         {
-            WeekTimer wt = weekTimerList.at(z);
-            //qDebug() << "Rum" << wt.getName() << wt.getID();
+            //qDebug() << UnixTime::get();
 
-            int id = wt.getID();
-            if(id != -1)
+            QDate nowDate = QDate::currentDate();
+            int dow = nowDate.dayOfWeek();
+
+            QTime nowTime = QTime::currentTime();
+            int hour = nowTime.hour();
+            int min = nowTime.minute();
+
+            qDebug() << "Time:" << dow << hour << min;
+
+
+            for (int z = 0; z < weekTimerList->size(); ++z)
             {
-                int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
-                if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
+                WeekTimer wt = weekTimerList->at(z);
+                //qDebug() << "Rum" << wt.getName() << wt.getID();
+
+                int id = wt.getID();
+                if(id != -1)
                 {
-                    if(wt.isON(dow, hour, min))
+                    int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
+                    if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
                     {
-                        qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
-                        tdTurnOn(id);
-                        sleep(1);
-                    }
-                    else
-                    {
-                        qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
-                        tdTurnOff(id);
-                        sleep(1);
+                        if(wt.isON(dow, hour, min))
+                        {
+                            qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
+                            tdTurnOn(id);
+                            sleep(1);
+                        }
+                        else
+                        {
+                            qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
+                            tdTurnOff(id);
+                            sleep(1);
+                        }
                     }
                 }
             }
         }
-        sleep(1*60);
     }
-#endif
+
+    mosqpp::lib_cleanup();
 
     return 0;
 }

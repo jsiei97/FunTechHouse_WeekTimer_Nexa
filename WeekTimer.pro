@@ -21,3 +21,6 @@ HEADERS += WeekTimerLine.h
 
 SOURCES += MosqConnect.cpp
 HEADERS += MosqConnect.h
+
+SOURCES += UnixTime.cpp
+HEADERS += UnixTime.h
