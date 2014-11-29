@@ -89,15 +89,21 @@ QString WeekTimer::getTimerString()
     return str;
 }
 
-bool WeekTimer::isON(int dow, int hour, int min)
+WeekTimerOut WeekTimer::isON(int dow, int hour, int min)
 {
-    bool turnON = false;
+    WeekTimerOut turnON = WT_OFF;
+
+    if(timers.empty())
+    {
+        return WT_DISABLED;
+    }
+
     for( int i=0 ; i<timers.size() ; i++ )
     {
         WeekTimerLine wtl = timers.at(i);
         if(wtl.isON(dow, hour, min))
         {
-            turnON = true;
+            turnON = WT_ON;
         }
     }
     return turnON;

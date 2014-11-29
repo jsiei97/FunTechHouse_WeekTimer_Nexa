@@ -29,6 +29,16 @@
 
 #include "WeekTimerLine.h"
 
+/**
+ * WeekTimer Output state
+ */
+typedef enum WTO
+{
+    WT_OFF = 0, ///< The timer output is OFF
+    WT_ON,      ///< The timer output is ON
+    WT_DISABLED ///< This timer is not active, no timerlines.
+} WeekTimerOut;
+
 class WeekTimer
 {
     private:
@@ -42,7 +52,7 @@ class WeekTimer
         bool addNewTimers(QString data);
         QString getTimerString();
 
-        bool isON(int dow, int hour, int min);
+        WeekTimerOut isON(int dow, int hour, int min);
 
         bool isName(QString name);
         QString getName();

@@ -61,14 +61,18 @@ int main()
         char *nameTmp = tdGetName( id );
         QString name = QString(nameTmp);
 
-        int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
+        int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF | TELLSTICK_BELL ) );
         if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
         {
             WeekTimer wt(name);
             wt.setID(id);
             weekTimerList->append(wt);
         }
-        /// @todo Check for bell later, and
+        if ( (methods & TELLSTICK_BELL) )
+        {
+            /// @todo What to do with a door bell
+            qDebug() << id << name << "is bell";
+        }
 
         qDebug() << id << name;
         tdReleaseString(nameTmp);
@@ -129,17 +133,44 @@ int main()
                     int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
                     if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
                     {
-                        if(wt.isON(dow, hour, min))
+                        /*
+                        //Check for remote ctrl action, has the output changes since last time?
+                        int last = tdLastSentCommand( id, methods);
+                        switch ( last )
                         {
-                            qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
-                            tdTurnOn(id);
-                            sleep(1);
+                            case TELLSTICK_TURNON :
+                                qDebug() << wt.getName() << "Last cmd was Turn ON";
+                                break;
+                            case TELLSTICK_TURNOFF :
+                                qDebug() << wt.getName() << "Last cmd was Turn OFF";
+                                break;
+                            default :
+                                break;
                         }
-                        else
+                        */
+
+                        WeekTimerOut status = wt.isON(dow, hour, min);
+                        switch ( status )
                         {
-                            qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
-                            tdTurnOff(id);
-                            sleep(1);
+                            case WT_ON:
+                                {
+                                    qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
+                                    tdTurnOn(id);
+                                    sleep(1);
+                                }
+                                break;
+                            case WT_DISABLED:
+                                //Do nothing!
+                                qDebug() << wt.getName() << "Not active at:" << dow << hour << min;
+                                break;
+                            case WT_OFF: //Fall thru ok
+                            default :
+                                {
+                                    qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
+                                    tdTurnOff(id);
+                                    sleep(1);
+                                }
+                                break;
                         }
                     }
                 }

@@ -371,17 +371,35 @@ void TestWeekTimer::test_WeekTimer()
     QCOMPARE(wt.isName(QString("Rum1")), true);
     QCOMPARE(wt.isName(QString("Rum2")), false);
 
+    //No timers added, output disabled.
+    QCOMPARE(0, wt.timers.size());
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    //Empty timers added, output disabled.
+    wt.addNewTimers(QString(";"));
+    QCOMPARE(0, wt.timers.size());
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    wt.addNewTimers(QString(""));
+    QCOMPARE(0, wt.timers.size());
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    //Add some real timers and check that we get ON/OFF
     wt.addNewTimers(QString("1:02:00-1:03:00;1:04:00-1:05:00;1:06:00-1:07:00"));
     QCOMPARE(3, wt.timers.size());
 
-    QCOMPARE(wt.isON(1,1,30), false);
-    QCOMPARE(wt.isON(1,2,30), true);
-    QCOMPARE(wt.isON(1,3,30), false);
-    QCOMPARE(wt.isON(1,4,30), true);
-    QCOMPARE(wt.isON(1,5,30), false);
-    QCOMPARE(wt.isON(1,6,30), true);
-    QCOMPARE(wt.isON(1,7,30), false);
+    QCOMPARE(wt.isON(1,1,30), WT_OFF);
+    QCOMPARE(wt.isON(1,2,30), WT_ON);
+    QCOMPARE(wt.isON(1,3,30), WT_OFF);
+    QCOMPARE(wt.isON(1,4,30), WT_ON);
+    QCOMPARE(wt.isON(1,5,30), WT_OFF);
+    QCOMPARE(wt.isON(1,6,30), WT_ON);
+    QCOMPARE(wt.isON(1,7,30), WT_OFF);
 
+    //Add empty timers added, output disabled.
+    wt.addNewTimers(QString(";"));
+    QCOMPARE(0, wt.timers.size());
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
 
     QCOMPARE(-1, wt.id);
     wt.setID(2);
