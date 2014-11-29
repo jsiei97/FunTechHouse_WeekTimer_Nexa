@@ -107,15 +107,23 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 // - new timer line?
                 // - status question?
                 // - force on/off for Xh?
-                if(!wt.addNewTimers(mess))
+
+                if (mess.compare("status") == 0)
                 {
-                    pub(name, "Error: bad data");
+                    pub(name, wt.getTimerString());
                 }
                 else
                 {
-                    list->replace(i, wt);
+                    if(!wt.addNewTimers(mess))
+                    {
+                        pub(name, "Error: bad data");
+                    }
+                    else
+                    {
+                        list->replace(i, wt);
+                        pub(name, wt.getTimerString());
+                    }
                 }
-                pub(name, wt.getTimerString());
             }
         }
     }
