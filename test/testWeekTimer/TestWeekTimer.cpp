@@ -58,6 +58,9 @@ class TestWeekTimer : public QObject
         void test_WeekTimerIO_data();
 
         void test_WeekTimerForce();
+
+        void test_WeekTimerForce2();
+        void test_WeekTimerForce2_data();
 };
 
 extern unsigned int MY_FEJK_TIME;
@@ -501,6 +504,35 @@ void TestWeekTimer::test_WeekTimerForce()
     //qDebug() << MY_FEJK_TIME;
     MY_FEJK_TIME++;
     QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+}
+
+void TestWeekTimer::test_WeekTimerForce2_data()
+{
+    QTest::addColumn<QString>("forceStr");
+    QTest::addColumn<int>("forceInt");
+    QTest::addColumn<QString>("timeStr");
+    QTest::addColumn<unsigned int>("time");
+
+    QTest::newRow("on")   << "ON"   << (int)WT_FORCE_ON   << "0"   << (unsigned int)0;
+    QTest::newRow("off")  << "OFF"  << (int)WT_FORCE_OFF  << "10"  << (unsigned int)( 10*60);
+    QTest::newRow("auto") << "AUTO" << (int)WT_FORCE_AUTO << "180" << (unsigned int)(180*60);
+}
+
+void TestWeekTimer::test_WeekTimerForce2()
+{
+    QFETCH(QString,forceStr);
+    QFETCH(int,    forceInt);
+
+    QFETCH(QString,     timeStr);
+    QFETCH(unsigned int,time);
+
+    WeekTimer wt("Test");
+
+    MY_FEJK_TIME = 0;
+    QVERIFY(wt.addForce(forceStr, timeStr));
+
+    QCOMPARE((int)wt.force, (int)forceInt);
+    QCOMPARE((unsigned int)wt.forceTime, (unsigned int)time);
 }
 
 QTEST_MAIN(TestWeekTimer)

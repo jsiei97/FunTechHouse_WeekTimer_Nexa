@@ -70,6 +70,7 @@ class WeekTimer
         WeekTimerOut isON(int dow, int hour, int min);
 
         void addForce(WeekTimerForce force, unsigned int time);
+        bool addForce(QString force, QString time);
         //QString getForceStatus();
 
         bool isName(QString name);

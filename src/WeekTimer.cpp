@@ -166,6 +166,38 @@ void WeekTimer::addForce(WeekTimerForce force, unsigned int time)
     }
 }
 
+bool WeekTimer::addForce(QString force, QString time)
+{
+    bool res = false;
+
+    unsigned int t = time.toUInt(&res, 10);
+    if(!res)
+    {
+        return false;
+    }
+
+    WeekTimerForce f = WT_FORCE_OFF;
+    if(force.compare("ON")==0)
+    {
+        f = WT_FORCE_ON;
+    }
+    else if(force.compare("OFF")==0)
+    {
+        f = WT_FORCE_OFF;
+    }
+    else if(force.compare("AUTO")==0)
+    {
+        f = WT_FORCE_AUTO;
+    }
+    else
+    {
+        return false;
+    }
+
+    addForce(f, t);
+    return true;
+}
+
 bool WeekTimer::isName(QString name)
 {
     return (this->name.compare(name) == 0);

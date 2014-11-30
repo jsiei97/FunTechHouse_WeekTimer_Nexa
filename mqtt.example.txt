@@ -7,3 +7,14 @@ mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum1_ctrl -m '0:15:30-0:10:0
 mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'status'
 mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum2_ctrl -m 'status'
 mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum1_ctrl -m 'status'
+
+#Turn on/off for 30 min, then go back to normal operation
+mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'force ON 30'
+mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'force OFF 30'
+#Go back to auto
+mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'force AUTO 0'
+
+# Turn on/off until the end of time (or someone sends force auto)
+mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'force ON 0'
+mosquitto_pub -h mosqhub -t /FunTechHouse/WeekTimer/Rum3_ctrl -m 'force OFF 0'
+

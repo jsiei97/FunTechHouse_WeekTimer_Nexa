@@ -108,9 +108,16 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 // - status question?
                 // - force on/off for Xh?
 
+                QRegExp rxForce("force (ON|OFF|AUTO) ([0-9]{1,})");
                 if (mess.compare("status") == 0)
                 {
                     pub(name, wt.getTimerString());
+                }
+                else if(rxForce.indexIn(mess) != -1)
+                {
+                    qDebug() << "Force" << rxForce.cap(1) << rxForce.cap(2);
+                    wt.addForce(rxForce.cap(1),rxForce.cap(2));
+                    list->replace(i, wt);
                 }
                 else
                 {
