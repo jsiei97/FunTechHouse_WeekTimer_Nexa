@@ -112,6 +112,7 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 if (mess.compare("status") == 0)
                 {
                     pub(name, wt.getTimerString());
+                    pub(name, wt.getForceStatus());
                 }
                 else if(rxForce.indexIn(mess) != -1)
                 {

@@ -198,6 +198,34 @@ bool WeekTimer::addForce(QString force, QString time)
     return true;
 }
 
+QString WeekTimer::getForceStatus()
+{
+    QString str("force ");
+
+    /// @bug sync problem within lists...
+    switch ( force )
+    {
+        case WT_FORCE_ON:
+            str.append("ON ");
+            break;
+        case WT_FORCE_OFF:
+            str.append("OFF ");
+            break;
+        case WT_FORCE_AUTO:
+            str.append("AUTO ");
+            break;
+    }
+
+    if(UnixTime::get() < forceTime)
+    {
+        //Return force time in seconds
+        str.append(QString("%1").arg((unsigned int)(forceTime-UnixTime::get()));
+        str.append("s");
+    }
+
+    return str;
+}
+
 bool WeekTimer::isName(QString name)
 {
     return (this->name.compare(name) == 0);

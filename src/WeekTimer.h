@@ -71,7 +71,7 @@ class WeekTimer
 
         void addForce(WeekTimerForce force, unsigned int time);
         bool addForce(QString force, QString time);
-        //QString getForceStatus();
+        QString getForceStatus();
 
         bool isName(QString name);
         QString getName();
