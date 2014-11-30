@@ -27,11 +27,15 @@
 
 #include "WeekTimer.h"
 #include "WeekTimerLine.h"
+#include "UnixTime.h"
 
 WeekTimer::WeekTimer(QString name)
 {
     this->name = name;
     id = -1;
+
+    force = WT_FORCE_AUTO;
+    forceTime = 0;
 }
 
 /**
@@ -91,6 +95,26 @@ QString WeekTimer::getTimerString()
 
 WeekTimerOut WeekTimer::isON(int dow, int hour, int min)
 {
+    switch ( force )
+    {
+        case WT_FORCE_OFF :
+            {
+                if(checkForceTime())
+                    return WT_OFF;
+            }
+            break;
+        case WT_FORCE_ON :
+            {
+                if(checkForceTime())
+                    return WT_ON;
+            }
+            break;
+        case WT_FORCE_AUTO : // Fall thru ok
+        default :
+            //Do nothing here
+            break;
+    }
+
     WeekTimerOut turnON = WT_OFF;
 
     if(timers.empty())
@@ -107,6 +131,39 @@ WeekTimerOut WeekTimer::isON(int dow, int hour, int min)
         }
     }
     return turnON;
+}
+
+bool WeekTimer::checkForceTime()
+{
+    if(0==forceTime)
+        return true;
+
+    if(forceTime >= UnixTime::get())
+        return true;
+
+    force = WT_FORCE_AUTO;
+    return false;
+}
+
+/**
+ * Add a force on the output
+ *
+ * @param force what output
+ * @param time how many minutes the force shall be active. 0 is unlimited time.
+ */
+void WeekTimer::addForce(WeekTimerForce force, unsigned int time)
+{
+    this->force=force;
+
+    if(time==0)
+    {
+        forceTime = 0;
+    }
+    else
+    {
+        //forceTime is in seconds, arg time is in minutes.
+        forceTime = (UnixTime::get())+(time*60);
+    }
 }
 
 bool WeekTimer::isName(QString name)

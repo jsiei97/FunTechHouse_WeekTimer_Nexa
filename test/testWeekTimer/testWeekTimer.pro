@@ -14,3 +14,7 @@ INCLUDEPATH += ../../src/
 
 SOURCES += WeekTimer.cpp
 SOURCES += WeekTimerLine.cpp
+
+# Stubs
+SOURCES += stub/UnixTime.cpp
+HEADERS += stub/UnixTime.h

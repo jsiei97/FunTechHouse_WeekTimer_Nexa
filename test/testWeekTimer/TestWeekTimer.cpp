@@ -35,6 +35,8 @@ class TestWeekTimer : public QObject
     public:
 
     private slots:
+        void initTestCase();
+
         //Tests for WeekTimerLine
         void test_setLine();
         void test_setLine_data();
@@ -54,7 +56,18 @@ class TestWeekTimer : public QObject
 
         void test_WeekTimerIO();
         void test_WeekTimerIO_data();
+
+        void test_WeekTimerForce();
 };
+
+extern unsigned int MY_FEJK_TIME;
+
+void TestWeekTimer::initTestCase()
+{
+    qDebug("called before everything else");
+    MY_FEJK_TIME = 1;
+}
+
 
 void TestWeekTimer::test_setLine_data()
 {
@@ -430,6 +443,64 @@ void TestWeekTimer::test_WeekTimerIO()
 
     wt.addNewTimers(timerLine);
     QCOMPARE(wt.getTimerString(), timerLine);
+}
+
+void TestWeekTimer::test_WeekTimerForce()
+{
+    WeekTimer wt("Test");
+    QCOMPARE(0, wt.timers.size());
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    wt.addForce(WT_FORCE_ON, 0);
+    QCOMPARE(wt.isON(1,1,30), WT_ON);
+
+    wt.addForce(WT_FORCE_OFF, 0);
+    QCOMPARE(wt.isON(1,1,30), WT_OFF);
+
+    wt.addForce(WT_FORCE_AUTO, 0);
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    //UnixTime...(that is seconds since 1970...)
+    MY_FEJK_TIME = 60;
+    // test force with end time
+
+    // Test a 60 min force
+    wt.addForce(WT_FORCE_ON, 60);
+    QCOMPARE(wt.isON(1,1,30), WT_ON);
+
+    for( int t=0 ; t<(60*60) ; t++ )
+    {
+        MY_FEJK_TIME++;
+        if(wt.isON(1,1,30) != WT_ON)
+        {
+            qDebug() << "FAIL:" << t << MY_FEJK_TIME;
+            QFAIL("isON force fail");
+
+        }
+    }
+
+    //qDebug() << MY_FEJK_TIME;
+    MY_FEJK_TIME++;
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
+
+    // Test a 60 min force
+    wt.addForce(WT_FORCE_OFF, 60);
+    QCOMPARE(wt.isON(1,1,30), WT_OFF);
+
+    for( int t=0 ; t<(60*60) ; t++ )
+    {
+        MY_FEJK_TIME++;
+        if(wt.isON(1,1,30) != WT_OFF)
+        {
+            qDebug() << "FAIL:" << t << MY_FEJK_TIME;
+            QFAIL("isON force fail");
+
+        }
+    }
+
+    //qDebug() << MY_FEJK_TIME;
+    MY_FEJK_TIME++;
+    QCOMPARE(wt.isON(1,1,30), WT_DISABLED);
 }
 
 QTEST_MAIN(TestWeekTimer)

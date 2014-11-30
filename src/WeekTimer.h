@@ -39,12 +39,27 @@ typedef enum WTO
     WT_DISABLED ///< This timer is not active, no timerlines.
 } WeekTimerOut;
 
+/**
+ * WeekTimer force status
+ */
+typedef enum WTF
+{
+    WT_FORCE_OFF = 0, ///< The timer output is forced OFF
+    WT_FORCE_ON,      ///< The timer output is forced ON
+    WT_FORCE_AUTO     ///< No active force, timer is back in auto
+} WeekTimerForce;
+
 class WeekTimer
 {
     private:
         QString name;
         int id;
         QList<WeekTimerLine> timers;
+
+        WeekTimerForce force;
+        unsigned int forceTime;
+
+        bool checkForceTime();
 
     public:
         WeekTimer(QString name);
@@ -53,6 +68,9 @@ class WeekTimer
         QString getTimerString();
 
         WeekTimerOut isON(int dow, int hour, int min);
+
+        void addForce(WeekTimerForce force, unsigned int time);
+        //QString getForceStatus();
 
         bool isName(QString name);
         QString getName();
