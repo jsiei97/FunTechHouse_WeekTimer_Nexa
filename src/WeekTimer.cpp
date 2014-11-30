@@ -219,7 +219,7 @@ QString WeekTimer::getForceStatus()
     if(UnixTime::get() < forceTime)
     {
         //Return force time in seconds
-        str.append(QString("%1").arg((unsigned int)(forceTime-UnixTime::get()));
+        str.append(QString("%1").arg((unsigned int)(forceTime-UnixTime::get())));
         str.append("s");
     }
 
