@@ -44,6 +44,7 @@ int main()
 {
     qDebug() << "WeekTimer";
     tdInit();
+    SQLiteWrapper lite;
 
     // This list comes from /etc/tellstick.conf
     // that was created with TelldusCenter.
@@ -66,8 +67,11 @@ int main()
         {
             WeekTimer wt(name);
             wt.setID(id);
+            // lite.getTimerData(name)
+            // lite.getForce(name)
             weekTimerList->append(wt);
         }
+
         if ( (methods & TELLSTICK_BELL) )
         {
             /// @todo What to do with a door bell
@@ -94,7 +98,8 @@ int main()
             "FunTechHouse_WeekTimer_Nexa",
             "mosqhub",
             1883,
-            weekTimerList
+            weekTimerList,
+            &lite
             );
 
     while(1)

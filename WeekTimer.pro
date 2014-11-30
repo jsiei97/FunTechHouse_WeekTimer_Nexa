@@ -1,4 +1,5 @@
 TEMPLATE = app
+QT += sql
 TARGET =
 
 DEPENDPATH  += src
@@ -16,3 +17,4 @@ SOURCES += WeekTimer.cpp
 SOURCES += WeekTimerLine.cpp
 SOURCES += MosqConnect.cpp
 SOURCES += UnixTime.cpp
+SOURCES += SQLiteWrapper.cpp

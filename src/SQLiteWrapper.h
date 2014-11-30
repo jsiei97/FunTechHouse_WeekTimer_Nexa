@@ -1,7 +1,7 @@
 /**
- * @file MosqConnect.h
+ * @file SQLiteWrapper.h
  * @author Johan Simonsson
- * @brief Mosquitto interface
+ * @brief A SQLite wrapper
  */
 
 /*
@@ -21,32 +21,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef  __MOSQCONNECT_H
-#define  __MOSQCONNECT_H
+#ifndef  __SQLITEWRAPPER_H
+#define  __SQLITEWRAPPER_H
 
-#include <mosquittopp.h>
-#include "WeekTimer.h"
-#include "SQLiteWrapper.h"
+#include <QSqlDatabase>
+#include <QMutex>
 
-class MosqConnect : public mosqpp::mosquittopp
+class SQLiteWrapper
 {
     private:
-        QList<WeekTimer> *list;
-        SQLiteWrapper *dblite;
+        QString filename;
+        QSqlDatabase db;
+        QMutex mutex;
+
+        void open();
+        void close();
 
     public:
-        MosqConnect(
-                const char *id,
-                const char *host,
-                int port,
-                QList<WeekTimer> *list,
-                SQLiteWrapper *db);
-        ~MosqConnect();
+        SQLiteWrapper();
+        //SQLiteWrapper()~;
 
-        void on_connect(int rc);
-        void on_message(const struct mosquitto_message *message);
-        void on_subscribe(int mid, int qos_count, const int *granted_qos);
-        void pub(QString topic, QString subject);
+        //QString getId(QString topic);
+        //void updateTimestamp(QString topic);
+        //QStringList getOldTopics();
 };
 
-#endif  // __MOSQCONNECT_H
+#endif  // __SQLITEWRAPPER_H

@@ -1,0 +1,5 @@
+sqlitebrowser weektimer.db
+
+sqlite3 weektimer.db "SELECT * FROM WeekTimer;"
+sqlite3 weektimer.db "SELECT * FROM Force;"
+

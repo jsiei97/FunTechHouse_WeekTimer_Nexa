@@ -1,5 +1,8 @@
-#The bin file for this project
+# The bin file for this project
 WeekTimer
+
+# Ignore the SQLite file
+weektimer.db
 
 # Buildfiles
 *.o

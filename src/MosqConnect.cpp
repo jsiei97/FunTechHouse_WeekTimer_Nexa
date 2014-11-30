@@ -5,7 +5,7 @@
  */
 
 /*
- * Copyright (C) 2013 Johan Simonsson
+ * Copyright (C) 2014 Johan Simonsson
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,19 +28,29 @@
 #include <QDebug>
 #include <QRegExp>
 #include <QDateTime>
+#include <QRegExp>
 
 #include <mosquittopp.h>
 
 #include "MosqConnect.h"
 #include "WeekTimer.h"
+#include "SQLiteWrapper.h"
+#include "UnixTime.h"
 
-MosqConnect::MosqConnect(const char *id, const char *host, int port, QList<WeekTimer> *list) : mosquittopp(id)
+MosqConnect::MosqConnect(
+        const char *id,
+        const char *host,
+        int port,
+        QList<WeekTimer> *list,
+        SQLiteWrapper *db) : mosquittopp(id)
 {
     this->list = list;
     int keepalive = 60;
 
     // Connect immediately.
     connect(host, port, keepalive);
+
+    dblite=db;
 };
 
 void MosqConnect::on_connect(int rc)
@@ -113,11 +123,14 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 {
                     pub(name, wt.getTimerString());
                     pub(name, wt.getForceStatus());
+                    //Get force status from db?
                 }
                 else if(rxForce.indexIn(mess) != -1)
                 {
                     qDebug() << "Force" << rxForce.cap(1) << rxForce.cap(2);
                     wt.addForce(rxForce.cap(1),rxForce.cap(2));
+                    //dblite->addForce(rxForce.cap(1),rxForce.cap(2));
+                    //or ON/OFF adds data, AUTO removed data from force table.
                     list->replace(i, wt);
                 }
                 else
@@ -128,6 +141,7 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                     }
                     else
                     {
+                        //dblite->addTimerData(name, mess);
                         list->replace(i, wt);
                         pub(name, wt.getTimerString());
                     }
