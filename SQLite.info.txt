@@ -3,3 +3,38 @@ sqlitebrowser weektimer.db
 sqlite3 weektimer.db "SELECT * FROM WeekTimer;"
 sqlite3 weektimer.db "SELECT * FROM Force;"
 
+#--------------------------------------------------
+
+sqlite3 weektimer.db
+
+#Create table:
+CREATE TABLE IF NOT EXISTS WeekTimer (name VARCHAR(256),timerdata VARCHAR(2048));
+CREATE TABLE IF NOT EXISTS Force     (name VARCHAR(256),state VARCHAR(10), time INTEGER);
+
+# WeekTimer examples:
+SELECT * FROM WeekTimer;
+INSERT INTO WeekTimer (name, timerdata) VALUES ('r1', '4:00:00-5:00:00');
+INSERT INTO WeekTimer (name, timerdata) VALUES ('r2', '1:00:00-2:00:00');
+INSERT INTO WeekTimer (name, timerdata) VALUES ('r3', '1:30:00-1:40:00;2:30:00-2:40:00');
+
+SELECT name FROM WeekTimer WHERE name like 'r1' LIMIT 1;
+UPDATE WeekTimer SET timerdata='7:00:00-8:00:00' WHERE name='r1';
+
+DELETE FROM WeekTimer WHERE name like 'r1';
+
+# Force examples:
+SELECT * FROM Force;
+
+INSERT INTO Force (name, state, time) VALUES ('r1', 'ON', '40');
+INSERT INTO Force (name, state, time) VALUES ('r2', 'ON', '50');
+INSERT INTO Force (name, state, time) VALUES ('r3', 'ON', '60');
+INSERT INTO Force (name, state, time) VALUES ('r4', 'ON', '0');
+
+SELECT name FROM Force WHERE name like 'r1';
+UPDATE Force SET state='OFF', time='20' WHERE name like 'r1';
+
+# Remove outdated timestamps
+DELETE FROM Force WHERE time < 45 and time != 0;
+# Update is ok from ON<->OFF, but AUTO is the same as no line (so delete it)
+DELETE FROM Force WHERE name like 'r2';
+
