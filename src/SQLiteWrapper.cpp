@@ -59,7 +59,7 @@ SQLiteWrapper::SQLiteWrapper()
     QStringList tableList = db.tables(QSql::Tables);
     if( tableList.size() == 0 )
     {
-        qDebug() << "Warning empty db";
+        //qDebug() << "Warning empty db";
 
         QSqlQuery query;
         // name and timerstring
@@ -88,17 +88,220 @@ SQLiteWrapper::SQLiteWrapper()
     close();
 };
 
-/*
-QString SQLiteWrapper::getId(QString topic)
+/**
+ * Check if name exists in table WeekTimer
+ *
+ * @param name table row name
+ * @return true if data exist, false if missing
+ */
+bool SQLiteWrapper::checkWeekTimerName(QString name)
 {
-
-    //find id
-    unsigned int id = 0;
-    bool ok = false;
-
-    QString str("SELECT id FROM data WHERE topic like '");
-    str.append(topic);
+    QString str("SELECT name FROM WeekTimer WHERE name LIKE '");
+    str.append(name);
     str.append("' LIMIT 1");
+
+    QSqlQuery q(str);
+    QSqlRecord rec = q.record();
+
+    //int rows = rec.count();
+    int rows = 0;
+    //int nameCol = rec.indexOf("name"); // index of the field "name"
+    while (q.next())
+    {
+        rows++;
+        //qDebug() << q.value(nameCol).toString(); // output all names
+    }
+    //qDebug() << "Number of columns: " << rows;
+
+    if(1 == rows)
+    {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Check if name exists in table Force
+ *
+ * @param name table row name
+ * @return true if data exist, false if missing
+ */
+bool SQLiteWrapper::checkForceName(QString name)
+{
+    QString str("SELECT name FROM Force WHERE name LIKE '");
+    str.append(name);
+    str.append("' LIMIT 1");
+
+    QSqlQuery q(str);
+    QSqlRecord rec = q.record();
+
+    //int rows = rec.count();
+    int rows = 0;
+    //int nameCol = rec.indexOf("name"); // index of the field "name"
+    while (q.next())
+    {
+        rows++;
+        //qDebug() << q.value(nameCol).toString(); // output all names
+    }
+    //qDebug() << "Number of columns: " << rows;
+
+    if(1 == rows)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool SQLiteWrapper::updateWeekTimer(QString name, QString timerdata)
+{
+    open();
+    bool res = true;
+    if(checkWeekTimerName(name))
+    {
+        //Update:
+        QString str("UPDATE WeekTimer SET timerdata='");
+        str.append(timerdata);
+        str.append("' WHERE name='");
+        str.append(name);
+        str.append("'");
+        //qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to update");
+        }
+    }
+    else
+    {
+        //Insert:
+        //INSERT INTO WeekTimer (name, timerdata) VALUES ('r1', '4:00:00-5:00:00');
+        QString str("INSERT INTO WeekTimer ( name, timerdata ) VALUES ('");
+        str.append(name);
+        str.append("', '");
+        str.append(timerdata);
+        str.append("')");
+        //qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to insert");
+        }
+    }
+    close();
+    return res;
+}
+
+bool SQLiteWrapper::updateForce(QString name, QString state, unsigned int time)
+{
+    bool res = true;
+    open();
+
+    //First do some house cleaning, remove outdated forced overides.
+    //DELETE FROM Force WHERE time < '"' and time != 0;
+    {
+        QString str("DELETE FROM Force WHERE time < '");
+        str.append(QString("%1").arg(UnixTime::get()));
+        str.append("' AND time != 0");
+        qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to update");
+        }
+    }
+
+
+    QString timestamp;
+    if(0==time)
+    {
+        timestamp.append(QString("%1").arg(time));
+    }
+    else
+    {
+        time=UnixTime::get()+(time*60);
+        timestamp.append(QString("%1").arg(time));
+    }
+    //qDebug() << timestamp << time;
+
+    //Then since AUTO means no force, this also removes any active rows.
+    //DELETE FROM Force WHERE name LIKE 'r2';
+    if(state.compare("AUTO")==0)
+    {
+        QString str("DELETE FROM Force WHERE name LIKE '");
+        str.append(name);
+        str.append("'");
+        qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to update");
+        }
+    }
+    else if(checkForceName(name))
+    {
+        //Update:
+        QString str("UPDATE Force SET state='");
+        str.append(state);
+        str.append("', time='");
+        str.append(timestamp);
+        str.append("' WHERE name='");
+        str.append(name);
+        str.append("'");
+        qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to update");
+        }
+    }
+    else
+    {
+        //Insert:
+        //INSERT INTO WeekTimer (name, timerdata) VALUES ('r1', '4:00:00-5:00:00');
+        QString str("INSERT INTO Force ( name, state, time ) VALUES ('");
+        str.append(name);
+        str.append("', '");
+        str.append(state);
+        str.append("', '");
+        str.append(timestamp);
+        str.append("')");
+        qDebug() << str;
+
+        QSqlQuery query;
+        if( !query.exec(str) )
+        {
+            qDebug() << "Error" << str;
+            res = false;
+            //qFatal("Failed to insert");
+        }
+    }
+    close();
+    return res;
+}
+
+QString SQLiteWrapper::getWeekTimer(QString name)
+{
+    QString timerdata;
+
+    QString str("SELECT timerdata FROM WeekTimer WHERE name LIKE '");
+    str.append(name);
+    str.append("' LIMIT 1");
+    //qDebug() << str;
 
     open();
 
@@ -107,32 +310,18 @@ QString SQLiteWrapper::getId(QString topic)
 
     //qDebug() << "Number of columns: " << rec.count();
 
-    int nameCol = rec.indexOf("id"); // index of the field "name"
-    //if size==1 ...
+    int colTimerData = rec.indexOf("timerdata");
     while (q.next())
     {
-        id = q.value(nameCol).toUInt(&ok);
-        if(ok)
-        {
-            break;
-        }
-        //qDebug() << q.value(nameCol).toString(); // output all names
+        //qDebug() << q.value(colTimerData).toString();
+        timerdata = q.value(colTimerData).toString();
     }
 
     close();
-
-    if(ok)
-    {
-        QString idS;
-        idS.setNum(id);
-        str.append(idS);
-        return idS;
-    }
-    else
-    {
-        return NULL;
-    }
+    return timerdata;
 }
+
+/*
 
 void SQLiteWrapper::updateTimestamp(QString topic)
 {

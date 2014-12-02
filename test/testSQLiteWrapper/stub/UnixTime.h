@@ -1,7 +1,7 @@
 /**
- * @file SQLiteWrapper.h
+ * @file UnixTime.h
  * @author Johan Simonsson
- * @brief A SQLite wrapper
+ * @brief Unix timestamp wrapper
  */
 
 /*
@@ -21,32 +21,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef  __SQLITEWRAPPER_H
-#define  __SQLITEWRAPPER_H
-
-#include <QSqlDatabase>
-#include <QMutex>
-
-class SQLiteWrapper
+/**
+ * Unix timestamp wrapper to simplify testing
+ */
+class UnixTime
 {
-    private:
-        QString filename;
-        QSqlDatabase db;
-        QMutex mutex;
-
-        void open();
-        void close();
-        bool checkWeekTimerName(QString name);
-        bool checkForceName(QString name);
-
     public:
-        SQLiteWrapper();
-        //SQLiteWrapper()~;
-
-        bool updateWeekTimer(QString name, QString timerdata);
-        bool updateForce(QString name, QString state, unsigned int time);
-
-        QString getWeekTimer(QString name);
+        static unsigned int get();
 };
-
-#endif  // __SQLITEWRAPPER_H

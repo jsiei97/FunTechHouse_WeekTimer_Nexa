@@ -67,7 +67,12 @@ int main()
         {
             WeekTimer wt(name);
             wt.setID(id);
-            // lite.getTimerData(name)
+
+            QString timerdata = lite.getWeekTimer(name);
+            if(!timerdata.isEmpty())
+            {
+                wt.addNewTimers(timerdata);
+            }
             // lite.getForce(name)
             weekTimerList->append(wt);
         }

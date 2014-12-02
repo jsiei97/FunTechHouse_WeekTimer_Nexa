@@ -1,7 +1,7 @@
 /**
- * @file SQLiteWrapper.h
+ * @file UnixTime.cpp
  * @author Johan Simonsson
- * @brief A SQLite wrapper
+ * @brief Unix timestamp wrapper
  */
 
 /*
@@ -21,32 +21,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef  __SQLITEWRAPPER_H
-#define  __SQLITEWRAPPER_H
+#include <QDateTime>
+#include "UnixTime.h"
 
-#include <QSqlDatabase>
-#include <QMutex>
 
-class SQLiteWrapper
+unsigned int MY_FEJK_TIME = 0;
+
+/**
+ * Returns a timestamp with the number of seconds that have passed since 1970-01-01T00:00:00,
+ * Coordinated Universal Time (Qt::UTC).
+ *
+ * @return unixtime timestamp
+ */
+unsigned int UnixTime::get()
 {
-    private:
-        QString filename;
-        QSqlDatabase db;
-        QMutex mutex;
-
-        void open();
-        void close();
-        bool checkWeekTimerName(QString name);
-        bool checkForceName(QString name);
-
-    public:
-        SQLiteWrapper();
-        //SQLiteWrapper()~;
-
-        bool updateWeekTimer(QString name, QString timerdata);
-        bool updateForce(QString name, QString state, unsigned int time);
-
-        QString getWeekTimer(QString name);
-};
-
-#endif  // __SQLITEWRAPPER_H
+    return MY_FEJK_TIME;
+}

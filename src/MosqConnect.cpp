@@ -110,8 +110,8 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
             WeekTimer wt = list->at(i);
             if(wt.getName().compare(name) == 0)
             {
-                //Name becomes "return topic"
-                name.prepend("/FunTechHouse/WeekTimer/");
+                QString topicOut("/FunTechHouse/WeekTimer/");
+                topicOut.append(name);
 
                 //What kind of mess is it?
                 // - new timer line?
@@ -121,8 +121,8 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 QRegExp rxForce("force (ON|OFF|AUTO) ([0-9]{1,})");
                 if (mess.compare("status") == 0)
                 {
-                    pub(name, wt.getTimerString());
-                    pub(name, wt.getForceStatus());
+                    pub(topicOut, wt.getTimerString());
+                    //pub(topicOut, wt.getForceStatus());
                     //Get force status from db?
                 }
                 else if(rxForce.indexIn(mess) != -1)
@@ -137,13 +137,13 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 {
                     if(!wt.addNewTimers(mess))
                     {
-                        pub(name, "Error: bad data");
+                        pub(topicOut, "Error: bad data");
                     }
                     else
                     {
-                        //dblite->addTimerData(name, mess);
+                        dblite->updateWeekTimer(name, mess);
                         list->replace(i, wt);
-                        pub(name, wt.getTimerString());
+                        pub(topicOut, wt.getTimerString());
                     }
                 }
             }
