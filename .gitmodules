@@ -1,0 +1,3 @@
+[submodule "mod/qpiGPIO"]
+	path = mod/qpiGPIO
+	url = git@github.com:jsiei97/qpiGPIO.git
