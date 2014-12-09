@@ -39,6 +39,8 @@
 #include "WeekTimer.h"
 #include "WeekTimerLine.h"
 
+#include "gpio_RaspberryPi.h"
+#include "SysfsGPIO.h"
 
 int main()
 {
@@ -55,43 +57,62 @@ int main()
     QList<WeekTimer> *weekTimerList;
     weekTimerList = new QList<WeekTimer>;
 
-    int intNumberOfDevices = tdGetNumberOfDevices();
-    for (int i = 0; i < intNumberOfDevices; i++)
+    //Add Motor1, Pin11
+    //Add Motor2, Pin13
+    //Add Utebel, Pin15
+    //Take this from a config file or args later...
     {
-        int id = tdGetDeviceId( i );
-        char *nameTmp = tdGetName( id );
-        QString name = QString(nameTmp);
+        QString name("Motor1");
+        WeekTimer wt(name);
+        wt.setID(GPIO_Pin11);
 
-        int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF | TELLSTICK_BELL ) );
-        if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
+        QString timerdata = lite.getWeekTimer(name);
+        if(!timerdata.isEmpty())
         {
-            WeekTimer wt(name);
-            wt.setID(id);
-
-            QString timerdata = lite.getWeekTimer(name);
-            if(!timerdata.isEmpty())
-            {
-                wt.addNewTimers(timerdata);
-            }
-            // lite.getForce(name)
-            weekTimerList->append(wt);
+            wt.addNewTimers(timerdata);
         }
+        // lite.getForce(name)
+        weekTimerList->append(wt);
+    }
+    {
+        QString name("Motor2");
+        WeekTimer wt(name);
+        wt.setID(GPIO_Pin13);
 
-        if ( (methods & TELLSTICK_BELL) )
+        QString timerdata = lite.getWeekTimer(name);
+        if(!timerdata.isEmpty())
         {
-            /// @todo What to do with a door bell
-            qDebug() << id << name << "is bell";
+            wt.addNewTimers(timerdata);
         }
+        // lite.getForce(name)
+        weekTimerList->append(wt);
+    }
+    {
+        QString name("Utebel");
+        WeekTimer wt(name);
+        wt.setID(GPIO_Pin15);
 
-        qDebug() << id << name;
-        tdReleaseString(nameTmp);
+        QString timerdata = lite.getWeekTimer(name);
+        if(!timerdata.isEmpty())
+        {
+            wt.addNewTimers(timerdata);
+        }
+        // lite.getForce(name)
+        weekTimerList->append(wt);
     }
 
 
+    SysfsGPIO gpio;
     for (int z = 0; z < weekTimerList->size(); ++z)
     {
         WeekTimer wt = weekTimerList->at(z);
         qDebug() << "WeekTimer name:" << wt.getName() << "id:" << wt.getID();
+
+        if(!gpio.configureGPIO((GPIO_Pin)wt.getID(), GPIO_DIRECTION_OUTPUT))
+        {
+            //myErr() << "configure failed...";
+            return false;
+        }
     }
 
     class MosqConnect *mqtt;
@@ -140,24 +161,7 @@ int main()
                 int id = wt.getID();
                 if(id != -1)
                 {
-                    int methods = tdMethods( id, (TELLSTICK_TURNON | TELLSTICK_TURNOFF) );
-                    if ( (methods & TELLSTICK_TURNON ) && (methods & TELLSTICK_TURNOFF) )
                     {
-                        /*
-                        //Check for remote ctrl action, has the output changes since last time?
-                        int last = tdLastSentCommand( id, methods);
-                        switch ( last )
-                        {
-                            case TELLSTICK_TURNON :
-                                qDebug() << wt.getName() << "Last cmd was Turn ON";
-                                break;
-                            case TELLSTICK_TURNOFF :
-                                qDebug() << wt.getName() << "Last cmd was Turn OFF";
-                                break;
-                            default :
-                                break;
-                        }
-                        */
 
                         WeekTimerOut status = wt.isON(dow, hour, min);
                         switch ( status )
@@ -165,20 +169,21 @@ int main()
                             case WT_ON:
                                 {
                                     qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
-                                    tdTurnOn(id);
-                                    sleep(1);
+                                    gpio.writeGPIO((GPIO_Pin)id, GPIO_HIGH);
+                                    //sleep(1);
                                 }
                                 break;
                             case WT_DISABLED:
                                 //Do nothing!
                                 qDebug() << wt.getName() << "Not active at:" << dow << hour << min;
+                                gpio.writeGPIO((GPIO_Pin)id, GPIO_LOW);
                                 break;
                             case WT_OFF: //Fall thru ok
                             default :
                                 {
                                     qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
-                                    tdTurnOff(id);
-                                    sleep(1);
+                                    gpio.writeGPIO((GPIO_Pin)id, GPIO_LOW);
+                                    //sleep(1);
                                 }
                                 break;
                         }
