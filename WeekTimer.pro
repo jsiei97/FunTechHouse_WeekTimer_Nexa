@@ -18,3 +18,6 @@ SOURCES += WeekTimerLine.cpp
 SOURCES += MosqConnect.cpp
 SOURCES += UnixTime.cpp
 SOURCES += SQLiteWrapper.cpp
+
+# The submodules
+include($$PWD/mod/qpiGPIO/mod.pri)
