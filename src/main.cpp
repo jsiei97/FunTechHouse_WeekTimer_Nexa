@@ -30,8 +30,6 @@
 //For sleep
 #include <unistd.h>
 
-// For the Telldus Duo
-#include <telldus-core.h>
 #include <mosquittopp.h>
 
 #include "MosqConnect.h"
@@ -45,7 +43,6 @@
 int main()
 {
     qDebug() << "WeekTimer";
-    tdInit();
     SQLiteWrapper lite;
 
     // This list comes from /etc/tellstick.conf
@@ -121,7 +118,7 @@ int main()
     mosqpp::lib_init();
 
     mqtt = new MosqConnect(
-            "FunTechHouse_WeekTimer_Nexa",
+            "FunTechHouse_WeekTimer_GPIO",
             "mosqhub",
             1883,
             weekTimerList,

@@ -5,7 +5,6 @@ TARGET =
 DEPENDPATH  += src
 INCLUDEPATH += src
 
-LIBS += -ltelldus-core
 LIBS += -lmosquittopp -lmosquitto
 
 target.path = /usr/local/bin/
