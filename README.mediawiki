@@ -1,92 +1,11 @@
-== Install ==
+== About ==
 
-# http://developer.telldus.com/wiki/TellStickInstallationUbuntu
-<pre>
-wget -q http://download.telldus.se/debian/telldus-public.key -O- | sudo apt-key add -
-
-sudo vi /etc/apt/sources.list
-# Tellstick Duo 
-deb http://download.telldus.com/debian/ stable main
-
-sudo apt-get update 
-sudo apt-get upgrade 
-
-sudo apt-get install telldus-core tellduscenter libtelldus-core-dev 
-</pre>
-
-== Connect Tellstick Duo ==
-
-=== lsusb ===
-<pre>
-Bus 001 Device 015: ID 1781:0c31 Multiple Vendors 
-</pre>
-
-
-== TelldusCenter ==
-
-To edit the /etc/tellstick.conf the simple tool is TelldusCenter, 
-and was installed under /usr/bin/TelldusCenter.
-
-I added a couple of test nexas to test with and got this /etc/tellstick.conf, 
-also the 
-
-<pre>
-user = "nobody"
-group = "plugdev"
-deviceNode = "/dev/tellstick"
-ignoreControllerConfirmation = "false"
-device {
-  id = 1
-  name = "Rum3"
-  controller = 0
-  protocol = "arctech"
-  model = "codeswitch:nexa"
-  parameters {
-    # devices = ""
-    house = "D"
-    unit = "3"
-    code = "0000000000"
-    system = "1"
-    # units = ""
-    fade = "false"
-  }
-}
-device {
-  id = 2
-  name = "Rum2"
-  controller = 0
-  protocol = "arctech"
-  model = "codeswitch:nexa"
-  parameters {
-    # devices = ""
-    house = "D"
-    unit = "2"
-    code = "0000000000"
-    system = "1"
-    # units = ""
-    fade = "false"
-  }
-}
-device {
-  id = 3
-  name = "Rum1"
-  controller = 0
-  protocol = "arctech"
-  model = "codeswitch:nexa"
-  parameters {
-    # devices = ""
-    house = "D"
-    unit = "1"
-    code = "0000000000"
-    system = "1"
-    # units = ""
-    fade = "false"
-  }
-}
-</pre>
+WeekTimer app for a Raspberry Pi that uses sysfs controlled gpio.
 
 
 == Build this app == 
+
+First update the submodules, then build it with.
 
 <pre>
 qmake 
