@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @author Johan Simonsson
- * @brief Main for the Telldus Duo WeekTimer test program
+ * @brief Main for the sysfs gpio WeekTimer program
  */
 
 /*
@@ -44,12 +44,6 @@ int main()
 {
     qDebug() << "WeekTimer";
     SQLiteWrapper lite;
-
-    // This list comes from /etc/tellstick.conf
-    // that was created with TelldusCenter.
-    //
-    // The name given in TelldusCenter also becomes the
-    // uniq part of the mqtt topic.
 
     QList<WeekTimer> *weekTimerList;
     weekTimerList = new QList<WeekTimer>;
@@ -134,11 +128,10 @@ int main()
             mqtt->reconnect();
         }
 
-        //Then every minute or so,
-        //update the timer output
-        if(UnixTime::get()%30==0)
+        //update the timer output (now and then)
+        if(UnixTime::get()%10==0)
         {
-            //qDebug() << UnixTime::get();
+            qDebug() << UnixTime::get();
 
             QDate nowDate = QDate::currentDate();
             int dow = nowDate.dayOfWeek();
@@ -158,35 +151,35 @@ int main()
                 int id = wt.getID();
                 if(id != -1)
                 {
+                    WeekTimerOut status = wt.isON(dow, hour, min);
+                    switch ( status )
                     {
-
-                        WeekTimerOut status = wt.isON(dow, hour, min);
-                        switch ( status )
-                        {
-                            case WT_ON:
-                                {
-                                    qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
-                                    gpio.writeGPIO((GPIO_Pin)id, GPIO_HIGH);
-                                    //sleep(1);
-                                }
-                                break;
-                            case WT_DISABLED:
-                                //Do nothing!
+                        case WT_ON:
+                            {
+                                qDebug() << wt.getName() << "Turn ON  at:" << dow << hour << min;
+                                gpio.writeGPIO((GPIO_Pin)id, GPIO_HIGH);
+                                //sleep(1);
+                            }
+                            break;
+                        case WT_DISABLED:
+                            {
                                 qDebug() << wt.getName() << "Not active at:" << dow << hour << min;
                                 gpio.writeGPIO((GPIO_Pin)id, GPIO_LOW);
-                                break;
-                            case WT_OFF: //Fall thru ok
-                            default :
-                                {
-                                    qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
-                                    gpio.writeGPIO((GPIO_Pin)id, GPIO_LOW);
-                                    //sleep(1);
-                                }
-                                break;
-                        }
+                            }
+                            break;
+                        case WT_OFF: //Fall thru ok
+                        default :
+                            {
+                                qDebug() << wt.getName() << "Turn OFF at:" << dow << hour << min;
+                                gpio.writeGPIO((GPIO_Pin)id, GPIO_LOW);
+                                //sleep(1);
+                            }
+                            break;
                     }
                 }
             }
+            // So this loop takes a second
+            sleep(1);
         }
     }
 
