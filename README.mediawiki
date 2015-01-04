@@ -11,3 +11,12 @@ First update the submodules, then build it with.
 qmake 
 make
 </pre>
+
+
+== tzdata ==
+
+If your system is lacking timezone information.
+<pre>
+sudo dpkg-reconfigure tzdata 
+</pre>
+
