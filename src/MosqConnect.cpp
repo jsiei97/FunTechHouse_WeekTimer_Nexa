@@ -121,9 +121,8 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
                 QRegExp rxForce("force (ON|OFF|AUTO) ([0-9]{1,})");
                 if (mess.compare("status") == 0)
                 {
+                    pub(topicOut, wt.getForceStatus());
                     pub(topicOut, wt.getTimerString());
-                    //pub(topicOut, wt.getForceStatus());
-                    //Get force status from db?
                 }
                 else if(rxForce.indexIn(mess) != -1)
                 {

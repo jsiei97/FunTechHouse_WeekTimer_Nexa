@@ -67,6 +67,7 @@ class WeekTimer
         bool addNewTimers(QString data);
         QString getTimerString();
 
+        WeekTimerOut isON();
         WeekTimerOut isON(int dow, int hour, int min);
 
         void addForce(WeekTimerForce force, unsigned int time);

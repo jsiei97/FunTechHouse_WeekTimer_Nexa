@@ -21,9 +21,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QStringList>
-#include <QString>
+#include <QDate>
 #include <QDebug>
+#include <QString>
+#include <QStringList>
+#include <QTime>
 
 #include "WeekTimer.h"
 #include "WeekTimerLine.h"
@@ -91,6 +93,20 @@ QString WeekTimer::getTimerString()
         str.append(wtl.getLine());
     }
     return str;
+}
+
+WeekTimerOut WeekTimer::isON()
+{
+    QDate nowDate = QDate::currentDate();
+    int dow = nowDate.dayOfWeek();
+
+    QTime nowTime = QTime::currentTime();
+    int hour = nowTime.hour();
+    int min = nowTime.minute();
+
+    //qDebug() << "isON Time:" << dow << hour << min;
+
+    return isON(dow, hour, min);
 }
 
 WeekTimerOut WeekTimer::isON(int dow, int hour, int min)
@@ -201,28 +217,47 @@ bool WeekTimer::addForce(QString force, QString time)
 QString WeekTimer::getForceStatus()
 {
     QString str("force ");
+    QString time;
 
-    /// @bug sync problem within lists...
+    WeekTimerOut out = isON();
+
+    if(0==forceTime)
+    {
+        time.append("∞s");
+    }
+    else if(UnixTime::get() < forceTime)
+    {
+        //Return force time in seconds
+        time.append(QString("%1").arg((unsigned int)(forceTime-UnixTime::get())));
+        time.append("s");
+    }
+
     switch ( force )
     {
         case WT_FORCE_ON:
             str.append("ON ");
+            str.append(time);
             break;
         case WT_FORCE_OFF:
             str.append("OFF ");
+            str.append(time);
             break;
         case WT_FORCE_AUTO:
             str.append("AUTO ");
+            switch ( out )
+            {
+                case WT_ON:
+                    str.append("ON");
+                    break;
+                case WT_OFF:
+                    str.append("OFF");
+                    break;
+                case WT_DISABLED:
+                    str.append("DISABLED");
+                    break;
+            }
             break;
     }
-
-    if(UnixTime::get() < forceTime)
-    {
-        //Return force time in seconds
-        str.append(QString("%1").arg((unsigned int)(forceTime-UnixTime::get())));
-        str.append("s");
-    }
-
     return str;
 }
 
