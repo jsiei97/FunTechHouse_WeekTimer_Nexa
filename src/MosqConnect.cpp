@@ -53,6 +53,10 @@ MosqConnect::MosqConnect(
     dblite=db;
 };
 
+MosqConnect::~MosqConnect()
+{
+}
+
 void MosqConnect::on_connect(int rc)
 {
     printf("Connected with code %d.\n", rc);
