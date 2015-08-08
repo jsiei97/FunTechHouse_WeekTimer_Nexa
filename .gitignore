@@ -1,5 +1,6 @@
 # The bin file for this project
 WeekTimer
+WeekTimerGPIO
 
 # Ignore the SQLite file
 weektimer.db
@@ -8,6 +9,9 @@ weektimer.db
 *.o
 *.moc
 *.swp
+
+# Debian install files
+*.deb
 
 # Autogen
 Makefile

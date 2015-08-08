@@ -1,0 +1,4 @@
+check process WeekTimerGPIO with pidfile /var/run/WeekTimerGPIO.pid
+	start = "/etc/init.d/WeekTimerGPIO start"
+	stop = "/etc/init.d/WeekTimerGPIO stop"
+
