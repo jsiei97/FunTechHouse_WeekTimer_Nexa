@@ -46,7 +46,7 @@ SCRIPTNAME=/etc/init.d/$NAME
 do_start() {
     echo -n "Starting $DAEMON : "
     #daemon ${exe} # Not working ...
-    if [ -s ${PIDFILE} ]; then
+    if [ $(pidof ${DAEMON}) ]; then
        RETVAL=1
        echo -n "Already running !" && warning
        echo
