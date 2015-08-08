@@ -34,6 +34,7 @@ class SQLiteWrapper
         QSqlDatabase db;
         QMutex mutex;
 
+        void init();
         void open();
         void close();
         bool checkWeekTimerName(QString name);
@@ -41,6 +42,7 @@ class SQLiteWrapper
 
     public:
         SQLiteWrapper();
+        SQLiteWrapper(QString filename);
         //SQLiteWrapper()~;
 
         bool updateWeekTimer(QString name, QString timerdata);

@@ -47,10 +47,9 @@ void SQLiteWrapper::close()
     mutex.unlock();
 }
 
-SQLiteWrapper::SQLiteWrapper()
+void SQLiteWrapper::init()
 {
-    //qDebug() << "Qt SQLite test app";
-    filename = "weektimer.db";
+    qDebug() << "SQLite init:" << filename;
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(filename);
 
@@ -86,6 +85,19 @@ SQLiteWrapper::SQLiteWrapper()
     }
 
     close();
+}
+
+SQLiteWrapper::SQLiteWrapper()
+{
+    //filename = "weektimer.db";
+    filename = "/var/db/WeekTimerGPIO.db";
+    init();
+};
+
+SQLiteWrapper::SQLiteWrapper(QString file)
+{
+    filename = file;
+    init();
 };
 
 /**

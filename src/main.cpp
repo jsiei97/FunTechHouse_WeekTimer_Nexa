@@ -40,10 +40,12 @@
 #include "gpio_RaspberryPi.h"
 #include "SysfsGPIO.h"
 
+/// @todo args path to WeekTimerGPIO.db
 int main()
 {
     qDebug() << "WeekTimer";
     SQLiteWrapper lite;
+    /// @todo call SQLiteWrapper with filename as args
 
     QList<WeekTimer> *weekTimerList;
     weekTimerList = new QList<WeekTimer>;
