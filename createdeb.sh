@@ -42,14 +42,14 @@ EOF
 ## echo "  git describe: "$(git describe --tags)     >> $control
 echo "  git log: "$(git log --oneline | head -n1) >> $control
 
-qmake
-make
+qmake   || exit 20
+make -j || exit 22
 #copy skeleton
 
 (cd debian/; tar c . )|(cd $NAME ; tar x)
 
-install -d $NAME/usr/sbin
-cp $APP $NAME/usr/sbin/
+install -d $NAME/usr/sbin || exit 30
+cp $APP $NAME/usr/sbin/   || exit 32
 
 # And the create the package
 popd
