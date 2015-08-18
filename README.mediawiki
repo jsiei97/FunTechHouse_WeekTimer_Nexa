@@ -3,13 +3,23 @@
 WeekTimer app for a Raspberry Pi that uses sysfs controlled gpio.
 
 
-== Build this app == 
+== Build this app ==
 
 First update the submodules, then build it with.
 
 <pre>
-qmake 
+qmake
 make
+</pre>
+
+== Install ==
+
+<pre>
+./createdeb.sh
+sudo /etc/init.d/monit stop
+sudo dpkg -r WeekTimerGPIO
+sudo dpkg -i WeekTimerGPIO_*.deb
+sudo /etc/init.d/monit start
 </pre>
 
 
@@ -17,6 +27,6 @@ make
 
 If your system is lacking timezone information.
 <pre>
-sudo dpkg-reconfigure tzdata 
+sudo dpkg-reconfigure tzdata
 </pre>
 
