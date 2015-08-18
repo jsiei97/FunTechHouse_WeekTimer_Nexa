@@ -63,7 +63,7 @@ void MosqConnect::on_connect(int rc)
         {
             WeekTimer wt = list->at(i);
             QString topic = wt.getName();
-            topic.prepend("/FunTechHouse/WeekTimer/");
+            topic.prepend("FunTechHouse/WeekTimer/");
             topic.append("_ctrl");
             qDebug() << "subscribe" << topic;
             subscribe(NULL, topic.toAscii());
@@ -99,7 +99,7 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
     qDebug() << "New message:" << (QDateTime::currentDateTime()).toString("hh:mm:ss") << topic << mess;
 
     //From topic to name
-    QRegExp rxName("/FunTechHouse/WeekTimer/(.*)_ctrl");
+    QRegExp rxName("FunTechHouse/WeekTimer/(.*)_ctrl");
     if (rxName.indexIn(topic) != -1)
     {
         QString name = rxName.cap(1);
@@ -110,7 +110,7 @@ void MosqConnect::on_message(const struct mosquitto_message *message)
             WeekTimer wt = list->at(i);
             if(wt.getName().compare(name) == 0)
             {
-                QString topicOut("/FunTechHouse/WeekTimer/");
+                QString topicOut("FunTechHouse/WeekTimer/");
                 topicOut.append(name);
 
                 //What kind of mess is it?
