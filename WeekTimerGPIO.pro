@@ -1,6 +1,6 @@
 TEMPLATE = app
 QT += sql
-TARGET =
+TARGET = WeekTimerGPIO
 
 DEPENDPATH  += src
 INCLUDEPATH += src
@@ -11,12 +11,18 @@ target.path = /usr/local/bin/
 INSTALLS += target
 
 # Input
-SOURCES += main.cpp
-SOURCES += WeekTimer.cpp
-SOURCES += WeekTimerLine.cpp
-SOURCES += MosqConnect.cpp
-SOURCES += UnixTime.cpp
-SOURCES += SQLiteWrapper.cpp
+HEADERS += src/MosqConnect.h \
+           src/SQLiteWrapper.h \
+           src/UnixTime.h \
+           src/WeekTimer.h \
+           src/WeekTimerLine.h
+
+SOURCES += src/main.cpp \
+           src/MosqConnect.cpp \
+           src/SQLiteWrapper.cpp \
+           src/UnixTime.cpp \
+           src/WeekTimer.cpp \
+           src/WeekTimerLine.cpp
 
 # The submodules
 include($$PWD/mod/qpiGPIO/mod.pri)
