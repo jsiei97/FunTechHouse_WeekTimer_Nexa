@@ -70,7 +70,7 @@ void MosqConnect::on_connect(int rc)
             topic.prepend("FunTechHouse/WeekTimer/");
             topic.append("_ctrl");
             qDebug() << "subscribe" << topic;
-            subscribe(NULL, topic.toAscii());
+            subscribe(NULL, topic.toLatin1());
         }
     }
 }
@@ -161,5 +161,5 @@ void MosqConnect::on_subscribe(int mid, int qos_count, const int *granted_qos)
 
 void MosqConnect::pub(QString topic, QString subject)
 {
-    publish(NULL, topic.toAscii(), subject.size(), subject.toAscii());
+    publish(NULL, topic.toLatin1(), subject.size(), subject.toLatin1());
 }
