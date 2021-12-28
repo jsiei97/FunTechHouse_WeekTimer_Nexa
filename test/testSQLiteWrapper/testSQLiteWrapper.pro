@@ -1,7 +1,7 @@
 CONFIG += qtestlib debug
 TEMPLATE = app
 QT += sql
-TARGET =
+TARGET = testSQLiteWrapper
 DEFINES += private=public
 
 # Test code
@@ -13,7 +13,7 @@ SOURCES += TestSQLiteWrapper.cpp
 DEPENDPATH  += ../../src/
 INCLUDEPATH += ../../src/
 
-SOURCES += SQLiteWrapper.cpp
+SOURCES += ../../src/SQLiteWrapper.cpp
 
 # Stubs
 SOURCES += stub/UnixTime.cpp
