@@ -1,6 +1,6 @@
 CONFIG += qtestlib debug
 TEMPLATE = app
-TARGET =
+TARGET = testWeekTimer
 DEFINES += private=public
 
 # Test code
@@ -12,8 +12,8 @@ SOURCES += TestWeekTimer.cpp
 DEPENDPATH  += ../../src/
 INCLUDEPATH += ../../src/
 
-SOURCES += WeekTimer.cpp
-SOURCES += WeekTimerLine.cpp
+SOURCES += ../../src/WeekTimer.cpp
+SOURCES += ../../src/WeekTimerLine.cpp
 
 # Stubs
 SOURCES += stub/UnixTime.cpp
