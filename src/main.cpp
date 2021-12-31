@@ -50,9 +50,10 @@ int main()
     QList<WeekTimer> *weekTimerList;
     weekTimerList = new QList<WeekTimer>;
 
-    //Add Motor1, Pin11
-    //Add Motor2, Pin13
-    //Add Utebel, Pin15
+    //Add Motor1, Pin11 (gpio17)
+    //Add Motor2, Pin13 (gpio27)
+    //Add Timer1, Pin15 (gpio22)
+    //Add Timer2, Pin16 (gpio23)
     //Take this from a config file or args later...
     {
         QString name("Motor1");
@@ -81,9 +82,22 @@ int main()
         weekTimerList->append(wt);
     }
     {
-        QString name("Utebel");
+        QString name("Timer1");
         WeekTimer wt(name);
         wt.setID(GPIO_Pin15);
+
+        QString timerdata = lite.getWeekTimer(name);
+        if(!timerdata.isEmpty())
+        {
+            wt.addNewTimers(timerdata);
+        }
+        // lite.getForce(name)
+        weekTimerList->append(wt);
+    }
+    {
+        QString name("Timer2");
+        WeekTimer wt(name);
+        wt.setID(GPIO_Pin16);
 
         QString timerdata = lite.getWeekTimer(name);
         if(!timerdata.isEmpty())
